@@ -40,4 +40,4 @@ jobs:
         script: |
           pkill -f login-0.0.1.jar || true
           cd /home/ubuntu/bokgi
-          nohup java -jar login-0.0.1.jar > login.log 2>&1 &
+          nohup java -jar login-0.0.1.jar > login1.log 2>&1 & disown

@@ -39,4 +39,5 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           pkill -f login-0.0.1.jar || true
-          nohup setsid java -jar /home/ubuntu/bokgi/login-0.0.1.jar > /home/ubuntu/bokgi/login.log 2>&1 < /dev/null & disown
+          cd /home/ubuntu/bokgi
+          nohup setsid java -jar login-0.0.1.jar > login.log 2>&1 < /dev/null & disown

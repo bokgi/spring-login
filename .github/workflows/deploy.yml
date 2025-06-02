@@ -41,6 +41,6 @@ jobs:
           bash -c '
             pkill -f login-0.0.1.jar || true
             cd /home/ubuntu/bokgi
-            nohup setsid java -jar login-0.0.1.jar > login1.log 2>&1 < /dev/null & disown
+            echo "java -jar login-0.0.1.jar > login1.log 2>&1 &" | at now
           '
 

@@ -51,7 +51,7 @@ public class SignController {
 
 	@PostMapping("/sign-up")
 	public SignUpResultDto signUp(@RequestBody SignUpRequestDto signUpRequestDto) {
-		signUpRequestDto.setRole("ADMIN");
+		signUpRequestDto.setRole("USER");
 		logger.info("[signUp] 회원가입을 수행합니다. id : {}, password : ****, name : {}, role : {}", signUpRequestDto.getId(), signUpRequestDto.getName(), signUpRequestDto.getRole());
 		SignUpResultDto signUpResultDto = signService.signUp(signUpRequestDto.getId(), signUpRequestDto.getPassword(), signUpRequestDto.getName(), signUpRequestDto.getRole());
 

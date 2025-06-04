@@ -1,7 +1,5 @@
 package com.adacho.service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpEntity;
@@ -26,7 +24,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class KakaoService {
@@ -101,12 +101,13 @@ public class KakaoService {
 		if(existingUser.isPresent()) {
 			appUser = existingUser.get();
 		} else {
+			log.info("no existing user ==> create user");
 			appUser = AppUser.builder()
 	                .id(kakaoUserDto.getId())
 	                .uid(kakaoUserDto.getEmail())
 	                .password("pw")
 	                .name(kakaoUserDto.getUserName())
-	                .role("ADMIN")
+	                .role("USER")
 	                .build();
 
 	        appUserRepository.save(appUser);

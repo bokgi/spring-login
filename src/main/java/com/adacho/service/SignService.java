@@ -69,7 +69,7 @@ public class SignService {
 		}
 		//입력한 패스워드와 db의 패스워드가 같으면 (로그인 성공하면)
 		SignInResultDto signInResultDto = SignInResultDto.builder() // SignInResultDto 객체 생성하고 signInResultDto에 넣음.
-				.token(jwtTokenProvider.createToken(String.valueOf(appUser.getUid()), appUser.getRoles()))
+				.token(jwtTokenProvider.createToken(String.valueOf(appUser.getUid()), appUser.getRole()))
 				.build();
 		signInResultDto.setName(appUser.getName());
 		setSuccessSignInResult(signInResultDto);

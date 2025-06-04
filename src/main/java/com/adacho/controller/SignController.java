@@ -6,27 +6,31 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.adacho.dto.KakaoUserDto;
 import com.adacho.dto.SignInRequestDto;
 import com.adacho.dto.SignInResultDto;
 import com.adacho.dto.SignUpRequestDto;
 import com.adacho.dto.SignUpResultDto;
+import com.adacho.service.KakaoService;
 import com.adacho.service.SignService;
 
 @RestController
 @RequestMapping("/api/sign-api")
 public class SignController {
 	private final SignService signService;
-
-	public SignController(SignService signService) {
+	private final KakaoService kakaoService;
+	
+	public SignController(SignService signService, KakaoService kakaoService) {
 		this.signService = signService;
+		this.kakaoService = kakaoService;
 	}
 
 	private Logger logger = LoggerFactory.getLogger(SignController.class);
@@ -60,6 +64,25 @@ public class SignController {
 		throw new RuntimeException("접근이 금지되었습니다.");
 	}
 
+	@PostMapping("/kakao-sign-in")
+	public SignInResultDto kakaoSignIn(@RequestParam String code) {
+		KakaoUserDto kakaoUserDto = new KakaoUserDto();
+		SignInResultDto signInResultDto = new SignInResultDto();
+		String accessToken = kakaoService.getAccessToken(code);
+		kakaoUserDto = kakaoService.getUserInfo(accessToken);
+		
+		signInResultDto = kakaoService.isThisUser(kakaoUserDto);
+		
+		if (signInResultDto.getCode() == 0) {
+			logger.info("[kakao-signIn] 정상적으로 로그인되었습니다.");
+		}
+		else if (signInResultDto.getCode() == -1) {
+			logger.info("[kakao-signIn] 로그인 실패 ");
+		}
+		
+		return signInResultDto;
+	}
+	
 	@ExceptionHandler(value=RuntimeException.class)
 	public Map<String, String> ExceptionHandler(RuntimeException e) {
 		HttpStatus httpStatus = HttpStatus.BAD_REQUEST;

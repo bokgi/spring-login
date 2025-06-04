@@ -39,7 +39,7 @@ public class SecurityConfig {
 				.sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // session을 사용하지 않는다는 의미
 				// JWT 토큰인증 방식의 사용으로 세션은 사용하지 않음
 				.authorizeHttpRequests(authorize -> authorize
-						.requestMatchers("/api/sign-api/sign-in", "/api/sign-api/sign-up", "/api/sign-api/exception", "/get/name").permitAll() // 3개의 주소에 대해서는 security 적용x
+						.requestMatchers("/api/sign-api/sign-in", "/api/sign-api/sign-up", "/api/sign-api/exception", "/get/name", "/api/sign-api/kakao-sign-in").permitAll() // 3개의 주소에 대해서는 security 적용x
 						.requestMatchers("**exception**").permitAll()
 						.anyRequest().hasAnyRole("ADMIN") 
 						// 나머지 주소에 대한 요청은 ADMIN 권한을 가진 사용자에게 허용

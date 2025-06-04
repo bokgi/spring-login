@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -93,6 +94,7 @@ public class KakaoService {
 	    }
 	}
 	
+	@Transactional
 	public SignInResultDto isThisUser(KakaoUserDto kakaoUserDto) {
 		// userdto에서 정보를 빼와서 kakaouser 테이블에 email이 같은 카카오계정있다면 -> 로그인처리
 		AppUser appUser;
@@ -103,7 +105,6 @@ public class KakaoService {
 		} else {
 			log.info("no existing user ==> create user");
 			appUser = AppUser.builder()
-	                .id(kakaoUserDto.getId())
 	                .uid(kakaoUserDto.getEmail())
 	                .password("pw")
 	                .name(kakaoUserDto.getUserName())

@@ -48,14 +48,14 @@ public class AppUser implements UserDetails{
 	@Column(nullable=false)
 	private String name;
 	
-	@ElementCollection(fetch=FetchType.EAGER) // roles 필드는 지연로딩(필요하지 않으면 로딩을 안하는것)을 못하게 막는 어노테이션
-	@Builder.Default // builder 패턴의 기본값으로 roles라는 리스트를 사용하겠다는 의미
-	private List<String> roles = new ArrayList<>();
+	@Column(nullable=false)
+	private String role;
+
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
-		return this.roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()); // .stream() -> roles 리스트를 순차적으로 처리할 수 있는 스트림으로 변환합니다. 
+		return null;
 	}
 
 	@Override
@@ -63,6 +63,7 @@ public class AppUser implements UserDetails{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 	
 
 }

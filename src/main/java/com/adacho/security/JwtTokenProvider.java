@@ -49,11 +49,11 @@ public class JwtTokenProvider {
 		return Keys.hmacShaKeyFor(keyBytes);
 	}
 
-	public String createToken(String userUid, List<String> roles) { 
+	public String createToken(String userUid, String role) { 
 		logger.info("[createToken] 토큰 생성 시작");
 
 		Date now = new Date(); // 현재날짜생성
-		String token = Jwts.builder().subject(userUid).claim("roles", roles).issuedAt(now) // token을 생성하고 문자열로 변환한뒤에 token에 넣음.
+		String token = Jwts.builder().subject(userUid).claim("roles", role).issuedAt(now) // token을 생성하고 문자열로 변환한뒤에 token에 넣음.
 				.expiration(new Date(now.getTime() + tokenValidMillisecond)).signWith(getSigningKey()).compact(); // .compact() -> 토큰을 문자열로 변환
 		// subject(userUid) : sub 클레임에 userUid 저장
 		// claim("roles", roles) : roles 라는 비공개 클레임에 roles 저장

@@ -35,10 +35,10 @@ public class SignService {
 		
 		if (role.equalsIgnoreCase("admin")) {
 			appUser = AppUser.builder().uid(id).name(name).password(passwordEncoder.encode(password)) // AppUser 클래스가 builder 이므로 이렇게 객체 생성가능
-					.roles(Collections.singletonList("ROLE_ADMIN")).build();							  // new AppUser() 와 같은 기능을함.
+					.role(role).build();							  // new AppUser() 와 같은 기능을함.
 		} else {
 			appUser = AppUser.builder().uid(id).name(name).password(passwordEncoder.encode(password))
-					.roles(Collections.singletonList("ROLE_USER")).build();
+					.role(role).build();
 		}
 
 		AppUser savedUser = appUserRepository.save(appUser); // appUser를 테이블에 저장하고 appUser가 savedUser에 들어감.

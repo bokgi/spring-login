@@ -17,9 +17,10 @@ import org.springframework.web.client.RestTemplate;
 
 import com.adacho.dto.KakaoUserDto;
 import com.adacho.dto.SignInResultDto;
-import com.adacho.entity.KakaoUser;
+import com.adacho.entity.AppUser;
+//import com.adacho.entity.KakaoUser;
 import com.adacho.repository.AppUserRepository;
-import com.adacho.repository.KakaoUserRepository;
+//import com.adacho.repository.KakaoUserRepository;
 import com.adacho.security.JwtTokenProvider;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class KakaoService {
 	private final AppUserRepository appUserRepository;
-	private final KakaoUserRepository kakaoUserRepository;
+//	private final KakaoUserRepository kakaoUserRepository;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final PasswordEncoder passwordEncoder;
 	
@@ -94,27 +95,28 @@ public class KakaoService {
 	
 	public SignInResultDto isThisUser(KakaoUserDto kakaoUserDto) {
 		// userdto에서 정보를 빼와서 kakaouser 테이블에 email이 같은 카카오계정있다면 -> 로그인처리
-		Optional<KakaoUser> existingUser = kakaoUserRepository.findByEmail(kakaoUserDto.getEmail());
-		KakaoUser kakaoUser;
+		AppUser appUser;
+		Optional<AppUser> existingUser = appUserRepository.findByUid(kakaoUserDto.getEmail());
 		
 		if(existingUser.isPresent()) {
-			kakaoUser = existingUser.get();
+			appUser = existingUser.get();
 		} else {
-	        kakaoUser = KakaoUser.builder()
+			appUser = AppUser.builder()
 	                .id(kakaoUserDto.getId())
-	                .email(kakaoUserDto.getEmail())
-	                .nickname(kakaoUserDto.getUserName())
+	                .uid(kakaoUserDto.getEmail())
+	                .password("pw")
+	                .name(kakaoUserDto.getUserName())
+	                .role("ADMIN")
 	                .build();
 
-	        kakaoUserRepository.save(kakaoUser);
+	        appUserRepository.save(appUser);
 		}
 		// 없으면 -> 테이블에 추가(회원가입) -> 로그인처리
-		List<String> roles = new ArrayList<String>();
-		roles.add("USER");
-	    String token = jwtTokenProvider.createToken(kakaoUser.getEmail(),roles);
+		
+	    String token = jwtTokenProvider.createToken(appUser.getUid(),appUser.getRole());
 	    SignInResultDto signInResultDto = new SignInResultDto();
 	    signInResultDto.setToken(token);
-	    signInResultDto.setName(kakaoUser.getNickname());
+	    signInResultDto.setName(appUser.getName());
 	    signInResultDto.setSuccess(true);
 	    signInResultDto.setCode(0);
 	    signInResultDto.setMsg("Success");

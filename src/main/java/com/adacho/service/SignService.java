@@ -21,23 +21,23 @@ public class SignService {
 	private final JwtTokenProvider jwtTokenProvider;
 	private final PasswordEncoder passwordEncoder;
 	
-	public SignUpResultDto signUp(String id, String password, String name, String role) {
+	public SignUpResultDto signUp(String uid, String password, String name, String role) {
 		AppUser appUser;
-		AppUser existingUser = appUserRepository.getByUid(id);
+		AppUser existingUser = appUserRepository.getByUid(uid);
 		
 	    if (existingUser != null) {
 	    	
 	    	SignUpResultDto signUpResultDto = new SignUpResultDto();
-	    	duplicate(signUpResultDto, id);
+	    	duplicate(signUpResultDto, uid);
 	    	
 	        return signUpResultDto; // 중복됨
 	    }
 		
 		if (role.equalsIgnoreCase("admin")) {
-			appUser = AppUser.builder().uid(id).name(name).password(passwordEncoder.encode(password)) // AppUser 클래스가 builder 이므로 이렇게 객체 생성가능
+			appUser = AppUser.builder().uid(uid).name(name).password(passwordEncoder.encode(password)) // AppUser 클래스가 builder 이므로 이렇게 객체 생성가능
 					.role(role).build();							  // new AppUser() 와 같은 기능을함.
 		} else {
-			appUser = AppUser.builder().uid(id).name(name).password(passwordEncoder.encode(password))
+			appUser = AppUser.builder().uid(uid).name(name).password(passwordEncoder.encode(password))
 					.role(role).build();
 		}
 

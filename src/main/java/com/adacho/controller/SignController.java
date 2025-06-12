@@ -78,23 +78,32 @@ public class SignController {
 	}
 
 	@PostMapping("/kakao-sign-in")
-	public SignInResultDto kakaoSignIn(@RequestParam String code) {
-		KakaoUserDto kakaoUserDto = new KakaoUserDto();
-		SignInResultDto signInResultDto = new SignInResultDto();
-		String accessToken = kakaoService.getAccessToken(code);
-		kakaoUserDto = kakaoService.getUserInfo(accessToken);
-		
-		signInResultDto = kakaoService.isThisUser(kakaoUserDto);
-		
-		if (signInResultDto.getCode() == 0) {
-			logger.info("[kakao-signIn] 정상적으로 로그인되었습니다.");
-		}
-		else if (signInResultDto.getCode() == -1) {
-			logger.info("[kakao-signIn] 로그인 실패 ");
-		}
-		
-		return signInResultDto;
+	public ResponseEntity<?> kakaoSignIn(@RequestParam String code) {
+	    try {
+	        logger.info("[kakao-signIn] 카카오 로그인 시도");
+
+	        String accessToken = kakaoService.getAccessToken(code);
+	        KakaoUserDto kakaoUserDto = kakaoService.getUserInfo(accessToken);
+
+	        SignInResultDto signInResultDto = kakaoService.isThisUser(kakaoUserDto);
+
+	        if (signInResultDto.getCode() == 0) {
+	            logger.info("[kakao-signIn] 정상적으로 로그인되었습니다.");
+	        } else if (signInResultDto.getCode() == -1) {
+	            logger.info("[kakao-signIn] 로그인 실패");
+	        }
+
+	        return ResponseEntity.ok(signInResultDto); // 정상 응답
+
+	    } catch (Exception e) {
+	        logger.error("[kakao-signIn] 카카오 로그인 중 예외 발생: {}", e.getMessage());
+	        e.printStackTrace();
+
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body("카카오 로그인 처리 중 서버 오류가 발생했습니다.");
+	    }
 	}
+
 	
 	@ExceptionHandler(value=RuntimeException.class)
 	public Map<String, String> ExceptionHandler(RuntimeException e) {

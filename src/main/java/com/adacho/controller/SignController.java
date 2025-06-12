@@ -6,6 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,17 +37,29 @@ public class SignController {
 	private Logger logger = LoggerFactory.getLogger(SignController.class);
 
 	@PostMapping("/sign-in")
-	public SignInResultDto signIn(@RequestBody SignInRequestDto signInRequestDto) throws RuntimeException { // ex) localhost:8080/sign-api/sign-in?id=aaa&password=1234
-		logger.info("[signIn] 로그인을 시도하고 있습니다. id : {}, pw : ****", signInRequestDto.getId());
-		SignInResultDto signInResultDto = signService.signIn(signInRequestDto.getId(), signInRequestDto.getPassword());
+	public ResponseEntity<?> signIn(@RequestBody SignInRequestDto signInRequestDto) {
+	    logger.info("[signIn] 로그인을 시도하고 있습니다. id : {}, pw : ****", signInRequestDto.getId());
 
-		if (signInResultDto.getCode() == 0) {
-			logger.info("[signIn] 정상적으로 로그인되었습니다. id : {}, token : {}, name : {}", signInRequestDto.getId(), signInResultDto.getToken(), signInResultDto.getName());
-		}
-		else if (signInResultDto.getCode() == -1) {
-			logger.info("[signIn] 로그인 실패 ");
-		}
-		return signInResultDto;
+	    try {
+	        SignInResultDto signInResultDto = signService.signIn(signInRequestDto.getId(), signInRequestDto.getPassword());
+
+	        if (signInResultDto.getCode() == 0) {
+	            logger.info("[signIn] 정상적으로 로그인되었습니다. id : {}, token : {}, name : {}",
+	                    signInRequestDto.getId(), signInResultDto.getToken(), signInResultDto.getName());
+	        } else if (signInResultDto.getCode() == -1) {
+	            logger.info("[signIn] 로그인 실패");
+	        }
+
+	        return ResponseEntity.ok(signInResultDto); // 정상 로그인 응답
+
+	    } catch (Exception e) {
+	        logger.error("[signIn] 로그인 도중 예외 발생: {}", e.getMessage());
+	        e.printStackTrace();
+
+	        // 에러 메시지와 함께 HTTP 500 응답
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body("로그인 중 서버 오류가 발생했습니다.");
+	    }
 	}
 
 	@PostMapping("/sign-up")

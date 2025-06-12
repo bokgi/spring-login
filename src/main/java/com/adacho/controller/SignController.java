@@ -63,13 +63,24 @@ public class SignController {
 	}
 
 	@PostMapping("/sign-up")
-	public SignUpResultDto signUp(@RequestBody SignUpRequestDto signUpRequestDto) {
+	public ResponseEntity<?> signUp(@RequestBody SignUpRequestDto signUpRequestDto) {
 		signUpRequestDto.setRole("USER");
 		logger.info("[signUp] 회원가입을 수행합니다. id : {}, password : ****, name : {}, role : {}", signUpRequestDto.getId(), signUpRequestDto.getName(), signUpRequestDto.getRole());
-		SignUpResultDto signUpResultDto = signService.signUp(signUpRequestDto.getId(), signUpRequestDto.getPassword(), signUpRequestDto.getName(), signUpRequestDto.getRole());
+		
+		try {
+			SignUpResultDto signUpResultDto = signService.signUp(signUpRequestDto.getId(), signUpRequestDto.getPassword(), signUpRequestDto.getName(), signUpRequestDto.getRole());
 
-		logger.info("[signUp] 회원가입을 완료했습니다. id : {}", signUpRequestDto.getId());
-		return signUpResultDto;
+			logger.info("[signUp] 회원가입을 완료했습니다. id : {}", signUpRequestDto.getId());
+			return ResponseEntity.ok(signUpResultDto);
+			
+		}catch (Exception e) {
+	        logger.error("[signIn] 로그인 도중 예외 발생: {}", e.getMessage());
+	        e.printStackTrace();
+
+	        // 에러 메시지와 함께 HTTP 500 응답
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body("회원가입 중 서버 오류가 발생했습니다.");
+		}
 	}
 
 	@GetMapping("/exception")

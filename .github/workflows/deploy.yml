@@ -24,6 +24,11 @@ jobs:
     - name: Set up Docker
       uses: docker/setup-buildx-action@v3
       
+    - name: 디버깅: 현재 디렉토리
+      run: |
+        pwd
+        ls -al
+      
     - name: Build Docker image
       run: docker build -t login-app .
 

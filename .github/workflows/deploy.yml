@@ -54,6 +54,6 @@ jobs:
           sudo docker stop login-app || true
           sudo docker rm login-app || true
           sudo docker load < /home/ubuntu/bokgi/login-app.tar
-          sudo docker run -d --name login-app -p 8080:8080 login-app
+          sudo docker run -d --name login-app --network my-network -p 8080:8080 login-app
 
 

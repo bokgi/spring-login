@@ -52,9 +52,9 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          docker stop login-app || true
-          docker rm login-app || true
-          docker load < /home/ubuntu/bokgi/login-app.tar
-          docker run -d --name login-app -p 8080:8080 login-app
+          sudo docker stop login-app || true
+          sudo docker rm login-app || true
+          sudo docker load < /home/ubuntu/bokgi/login-app.tar
+          sudo docker run -d --name login-app -p 8080:8080 login-app
 
 

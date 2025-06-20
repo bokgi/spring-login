@@ -78,7 +78,7 @@ public class KakaoService {
 	    MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 	    params.add("grant_type", "authorization_code");
 	    params.add("client_id", "55d2a867b5b86ca3c3b738518c2e03c5"); // 카카오 앱 REST API 키
-	    params.add("redirect_uri", "http://14.63.178.159/kakao"); // 프론트에서 설정한 redirect_uri
+	    params.add("redirect_uri", "http://matgpt.p-e.kr/kakao"); // 프론트에서 설정한 redirect_uri
 	    params.add("code", code); // 프론트에서 받은 code
 
 	    HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);

@@ -34,7 +34,7 @@ public class SecurityConfig {
 	@Bean // 프로그램을 실행하면 bean 메서드가 호출되고 이 메서드의 반환객체 SecurityFilterChain객체가 스프링 컨테이너에 들어간다.
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.httpBasic(HttpBasicConfigurer::disable) // UI를 사용하는 것을 기본값으로 가진 시큐리티 설정을 비활성
-				.cors(cors -> cors.disable())
+				.cors(cors -> cors.configurationSource(corsConfigurationSource()))
 				.csrf(CsrfConfigurer::disable) // CSRF 보안설정 비활성
 				.sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // session을 사용하지 않는다는 의미
 				// JWT 토큰인증 방식의 사용으로 세션은 사용하지 않음
@@ -53,4 +53,18 @@ public class SecurityConfig {
 		return http.build();
 	}
 	
+	@Bean
+	CorsConfigurationSource corsConfigurationSource() {
+	    CorsConfiguration config = new CorsConfiguration();
+	    config.setAllowedOrigins(List.of("https://matgpt.p-e.kr")); // 또는 "*" 임시 테스트용
+	    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+	    config.setAllowedHeaders(List.of("*"));
+	    config.setAllowCredentials(true); // 인증 정보 포함 허용
+
+	    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+	    source.registerCorsConfiguration("/**", config);
+	    return source;
+	}
+	
 }
+

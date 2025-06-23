@@ -36,7 +36,7 @@ public class JwtTokenProvider {
 
 	@Value("${springboot.jwt.secret}") // application.properties 파일에 있는 springboot.jwt.secret 의 값을 가져와서 secretKey 변수에 넣는다.
 	private String secretKey = "randomKey";
-	private final long tokenValidMillisecond = 1000L * 60 * 30;// 토큰 만료 기간을 1시간으로 설정. 1000L = 1초
+	private final long tokenValidMillisecond = 1000L * 60 * 60;// 토큰 만료 기간을 1시간으로 설정. 1000L = 1초
 	//1000L * 60 * 60;
 	// 스프링 빈 생성 후 실행(secretKey 값을 Base64형식으로 인코딩하여 저장) // 객체생성후 init 메서드 실행
 	@PostConstruct
